@@ -1,0 +1,20 @@
+#Detect session creating
+alert tcp any any -> any any (msg: "Request to create a session"; opcua: function createSessionReq; sid:1;)
+#Detect reading parameters 
+alert tcp any any -> any any (msg: "Request to read parameters"; opcua: function readReq; sid:2;)
+#Detect opening new channel. Because of classtype bad-unknown its priority = 2
+alert tcp any any -> any any (msg: "OPN message"; opcua: type OPN; classtype: bad-unknown; sid:3;)
+#Detect HELLO messages
+alert tcp any any -> any any (msg: "HELLO message"; opcua: type HEL; sid:4;)
+#Drop packets with size less then 100
+drop tcp any any -> any any (msg: "Packet size lt 100"; opcua: size lt 100; sid:5;)
+#Detect packets with size equal 171
+alert tcp any any -> any any (msg: "Packet size eq 171"; opcua: size eq 171; sid:6;)
+#Drop packets with invalid sequrity token
+drop tcp any any -> any any (msg: "Token has been changed"; opcua: token; sid:7;)
+#Detect request number 29
+alert tcp any any -> any any (msg: "Request id equal to 29"; opcua: request 29; sid:8;)
+#Detect read request with size greater then 100. Because of classtype successful-recon-largescale its priority = 2
+alert tcp any any -> any any (msg: "Read req"; opcua: function readReq; classtype: successful-recon-largescale; sid:9;)
+#Detect MSG message type with size greater then 200. Because of classtype not-suspicious its priority = 3
+drop tcp any any -> any any (msg: "MSG message"; opcua: type MSG; classtype: not-suspicious; sid:10;)
